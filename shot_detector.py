@@ -11,14 +11,17 @@ from utils import score, detect_down, detect_up, in_hoop_region, clean_hoop_pos,
 class ShotDetector:
     def __init__(self):
         # Load the YOLO model created from main.py - change text to your relative path
-        self.model = YOLO("best.pt")
+        self.model = YOLO("Yolo-Weights/bball_model.pt")
         self.class_names = ['Basketball', 'Basketball Hoop']
 
         # Uncomment line below to use webcam (I streamed to my iPhone using Iriun Webcam)
         # self.cap = cv2.VideoCapture(0)
 
         # Use video - replace text with your video path
-        self.cap = cv2.VideoCapture("video_test_5.mp4")
+        self.cap = cv2.VideoCapture("aightcropped.mp4")
+
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
         self.ball_pos = []  # array of tuples ((x_pos, y_pos), frame count, width, height, conf)
         self.hoop_pos = []  # array of tuples ((x_pos, y_pos), frame count, width, height, conf)
@@ -49,7 +52,7 @@ class ShotDetector:
             if not ret:
                 # End of the video or an error occurred
                 break
-
+            self.frame = cv2.resize(self.frame, (1280, 720))
             results = self.model(self.frame, stream=True)
 
             for r in results:
@@ -65,6 +68,8 @@ class ShotDetector:
 
                     # Class Name
                     cls = int(box.cls[0])
+                    print(f"Detected class indices: {cls}")
+                    print(f"Class names length: {len(self.class_names)}")
                     current_class = self.class_names[cls]
 
                     center = (int(x1 + w / 2), int(y1 + h / 2))

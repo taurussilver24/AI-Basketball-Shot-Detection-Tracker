@@ -19,4 +19,4 @@ if __name__ == "__main__":
     model = YOLO('Yolo-Weights/yolov8n.pt')
 
     # Train the model
-    results = model.train(data='config.yaml', epochs=100, imgsz=640)
+    results = model.train(data='config2.yaml', epochs=100, imgsz=640)
